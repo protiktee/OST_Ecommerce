@@ -1,6 +1,6 @@
 ﻿var ProductService = {
     LstProducts: (callback) => { 
-        $.get("http://localhost:12666/ProductAPI/LisProduct", function (data, status) {
+        $.get("https://dummyjson.com/products", function (data, status) {
             callback(data);
         })
     }
