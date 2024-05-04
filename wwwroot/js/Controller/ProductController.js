@@ -34,26 +34,13 @@ var ProductController = {
 
             })
             $('#dvProductList').html(productContent);
-        }) 
+        })
     },
-    AddToCart: (cntrl) => { 
-        /*if (localStorage.getItem("LstCartProducts") != undefined && localStorage.getItem("LstCartProducts") != null) {
-            var products = localStorage.getItem("LstCartProducts") ;
-            $.each(products, function (index, value) {
-                console.log(value)
-                //LstCartproducts.push(JSON.parse(value))
-            })
-             
-        }*/
-        //console.log("----------Existing product---------");
-        //console.log(LstCartproducts);
-
+    AddToCart: (cntrl) => {
         var targetIndex = $(cntrl).attr("id").split('_')[1];
         var targetImage = $('#pdPicture_' + targetIndex).attr('src');
         var targetName = $('#pdName_' + targetIndex).html();
         var targetPrice = $('#pdPrice_' + targetIndex).html();
-
-        $('#lblCartCount').html(parseInt($('#lblCartCount').html()) + 1);
 
         var targetProduct =
         {
@@ -62,18 +49,50 @@ var ProductController = {
             Price: targetPrice
         }
         LstCartproducts.push(targetProduct);
-        //localStorage.setItem("LstCartProducts", JSON.stringify(LstCartproducts) ); 
-        //console.log("----------After adding new product---------");
-        //console.log(LstCartproducts);
 
-        alert("Product added to cart")
+        ProductController.ArrangeProductsForCart();
+        alert("Product added to cart");
+    },
+    DeleteFromCart: (targetIndex) => {
+        debugger;
+        let LstCartproducts_upd = [];
+        $.each(LstCartproducts, function (index, value) {
+            if (targetIndex != index) {
+                LstCartproducts_upd.push(value)
+            }
+        })
+        //if (LstCartproducts != 0)
+        LstCartproducts = LstCartproducts_upd;
+        localStorage.setItem("LstCartproducts", JSON.stringify(LstCartproducts));
+        ProductController.ArrangeProductsForCart();
+        alert("Cart updated")
     },
     ViewCart: () => {
+        if ($("#dvViewCartsWrapper").css('right') == "0" || $("#dvViewCartsWrapper").css('right') == "0px") {
+            $("#dvViewCartsWrapper").animate({
+                right: "-300"
+            }, "fast");
+        }
+        else {
+            $("#dvViewCartsWrapper").animate({
+                right: "0"
+            }, "fast");
+        }
+    },
+    ArrangeProductsForCart: () => {
+        $('#lblCartCount').html("0");
+        $("#dvViewCarts").html('');
+        if ($('body').find('#dvDetailsCartsProduct').length > 0) {
+            $("#dvDetailsCartsProduct").html('');
+        }
         if (LstCartproducts.length > 0) {
-            $("#dvViewCarts").html('');
+            //Cart Count update
+            $('#lblCartCount').html(LstCartproducts.length);
+
+            //View Cart update 
             $.each(LstCartproducts, function (index, value) {
                 $("#dvViewCarts").append(`
-                 <div style="clear:both;display:black;border:1px solid #eee;height:100px;width:100%">
+                 <div id='dvCartWrapper_${index}' style="clear:both;display:black;border:1px solid #eee;height:100px;width:100%">
                     <div class="row" style="padding:5px;">
                         <div class="col col-sm-3">
                             <img src="${value.Image}" style="width:100px;" />
@@ -85,23 +104,52 @@ var ProductController = {
                             <span>${value.Price}</span>
                         </div>
                         <div class="col col-sm-3">
-                            <span>x</span>
+                            <span id='delCartProduct_${index}' style='padding:3px;background:red;color:white;cursor:pointer' onclick="javascript:ProductController.DeleteFromCart(${index})">x</span>
                         </div>
                     </div>
                 </div> 
                 `);
             })
-        }
 
-        if ($("#dvViewCarts").css('right') == "0" || $("#dvViewCarts").css('right') == "0px") {
-            $("#dvViewCarts").animate({
-                right: "-300"
-            }, "fast");
+            //Checkout details update 
+            if ($('body').find('#dvDetailsCartsProduct').length > 0) {
+                $.each(LstCartproducts, function (index, value) {
+                    $("#dvDetailsCartsProduct").append(`
+                     <div id='dvChkOutCartWrapper_${index}' style="clear:both;display:black;border:1px solid #eee;height:100px;width:100%">
+                        <div class="row" style="padding:5px;">
+                            <div class="col col-sm-3">
+                                <img src="${value.Image}" style="width:100px;" />
+                            </div>
+                            <div class="col col-sm-3">
+                                <span>${value.Name}</span>
+                            </div>
+                            <div class="col col-sm-3">
+                                <span>${value.Price}</span>
+                            </div>
+                            <div class="col col-sm-3">
+                                <span id='delChkOutCartProduct_${index}' style='padding:3px;background:red;color:white;cursor:pointer' onclick="javascript:ProductController.DeleteFromCart(${index})">x</span>
+                            </div>
+                        </div>
+                    </div>
+                    `);
+                })
+            }
+
+        }
+    },
+    PrepareCartForCheckoutUI: (url) => {
+        if (LstCartproducts.length > 0) {
+            localStorage.setItem("LstCartproducts", JSON.stringify(LstCartproducts));
+            window.location.href = url;
         }
         else {
-            $("#dvViewCarts").animate({
-                right: "0"
-            }, "fast");
+            alert('Cart Empty');
+        }
+    },
+    LoadCartProductsForCheckout: () => {
+        if (localStorage.getItem("LstCartproducts") != null && localStorage.getItem("LstCartproducts") != undefined) {
+            LstCartproducts = JSON.parse(localStorage.getItem("LstCartproducts"));
+            ProductController.ArrangeProductsForCart();
         }
     }
 }

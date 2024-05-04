@@ -13,6 +13,10 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+            crossorigin="anonymous"></script>
     <script>
         $(document).ready(function () { 
             if (localStorage.getItem("UserName") != undefined && localStorage.getItem("UserName") != null) { 
@@ -59,7 +63,7 @@
             @RenderBody()
         </main>
     </div>
-
+    @Html.Partial("~/views/common/_partialviewcart.cshtml")
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - OST_Ecommerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
