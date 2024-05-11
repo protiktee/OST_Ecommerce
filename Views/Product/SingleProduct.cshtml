@@ -1,0 +1,17 @@
+﻿  
+
+
+@* @{
+    var ProductID = Context.Request.Query["ProductID"];
+} *@
+<script>
+     
+    var pProductID = @ViewBag.ProductId;
+    $(document).ready(function () {
+       ProductController.SingleProduct(pProductID);
+    })
+</script>
+
+<div id="dvSignleViewProduct" style="width:100%">
+
+</div>
