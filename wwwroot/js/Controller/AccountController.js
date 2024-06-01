@@ -10,9 +10,14 @@
         }
         AccountService.VerifyUser(ModelAccount, function (response) {
             debugger;
-            if (response == "Successfully Authorized") {
+            console.log(JSON.stringify(response))
+            if (parseInt(response.loginStatus) == 1) {
+                //alert(response.msg)
                 localStorage.setItem("UserName", pUserName);
-                window.location.href = url;
+                
+                var pdata = response.data;
+                console.log(pdata.pageURL)
+                window.location.href = 'http://localhost:12666/' + pdata.pageURL;
             }
             else {
                 alert("Unauthorized")

@@ -15,7 +15,8 @@ namespace OST_Ecommerce.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<Account> lstAcc=Account.ListUsers(); 
+			return View();
         }
 
         public IActionResult Privacy()
@@ -28,5 +29,6 @@ namespace OST_Ecommerce.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }

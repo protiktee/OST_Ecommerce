@@ -9,13 +9,27 @@ namespace OST_Ecommerce.Controllers
         [HttpPost]
         public IActionResult VerifyUser(Account ModelAccount)
         {
-            if (ModelAccount.UserName == "protik" && ModelAccount.Password == "123456")
+            List<Account> lstUsers = Account.ListUsers();
+            bool status = false;
+            Account objModel = new Account();
+            foreach (Account obj in lstUsers)
             {
-                return Ok("Successfully Authorized");
+                if (!status) 
+                {
+                    if (ModelAccount.UserName == obj.UserName && ModelAccount.Password == obj.Password)
+                    {
+                        objModel = obj;
+                        status = true;
+                    }
+                }
+                
+            }
+            if (status)
+            {
+                return Ok(new { LoginStatus = 1, Msg = "Successfully Authorized",data= objModel });
             }
             else
-                return Unauthorized(new { Message = "Unauth access" });
-            
+                return Unauthorized(new { LoginStatus = 0, Message = "Unauth access",data = objModel });
         }
     }
 }
